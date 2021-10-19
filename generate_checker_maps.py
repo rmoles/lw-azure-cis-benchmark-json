@@ -4,10 +4,10 @@ import subprocess
 result = subprocess.run(["lacework", "api", "get", "/api/v1/external/recommendations/azure"], stdout=subprocess.PIPE)
 checkers = json.loads(result.stdout.decode("utf-8"))['data'][0]
 
-with open('checkers.json', 'w') as outfile:
-    json.dump(checkers, outfile)
+with open('all_checkers.json', 'w') as outfile:
+    json.dump(checkers, outfile, indent=4)
 
-checkers_131 = [checker for checker in checkers if ("131" in checker)]
+checkers_131 = [checker for checker in checkers if ("131" in checker or "LW_Azure_" in checker)]
 checkers_10 = [checker for checker in checkers if ("131" not in checker)]
 
 checkers_131.sort()
