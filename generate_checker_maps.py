@@ -6,9 +6,6 @@ checkers = json.loads(result.stdout.decode("utf-8"))['data'][0]
 
 with open('checkers.json', 'w') as outfile:
     json.dump(checkers, outfile)
-#
-# f = open('checkers.json', )
-# checkers = json.load(f)
 
 checkers_131 = [checker for checker in checkers if ("131" in checker)]
 checkers_10 = [checker for checker in checkers if ("131" not in checker)]
