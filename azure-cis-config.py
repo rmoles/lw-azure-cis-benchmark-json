@@ -33,66 +33,36 @@ def generate_checker_map(flag):
 
     if flag == 'disable_cis_10':
         disable_10 = json.dumps(disable_map_10)
-        response = subprocess.run([
-            "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-                .format(disable_10)
-        ],
-            shell=True,
-            capture_output=True)
-        parse_response(response)
+        make_request_and_parse_response(disable_10)
 
     elif flag == 'enable_cis_10':
         enable_10 = json.dumps(enable_map_10)
-        response = subprocess.run([
-            "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-                .format(enable_10)
-        ],
-            shell=True,
-            capture_output=True).stdout.decode('utf-8')
-        print(response)
+        make_request_and_parse_response(enable_10)
 
     elif flag == 'disable_cis_131':
         disable_131 = json.dumps(disable_map_131)
-        response = subprocess.run([
-            "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-                .format(disable_131)
-        ],
-            shell=True,
-            capture_output=True)
-        parse_response(response)
+        make_request_and_parse_response(disable_131)
 
     elif flag == 'enable_cis_131':
         enable_131 = json.dumps(enable_map_131)
-        response = subprocess.run([
-            "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-                .format(enable_131)
-        ],
-            shell=True,
-            capture_output=True)
-        parse_response(response)
+        make_request_and_parse_response(enable_131)
 
     elif flag == 'disable_all':
         disable_all = json.dumps({**disable_map_131, **disable_map_10})
-        response = subprocess.run([
-            "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-                .format(disable_all)
-        ],
-            shell=True,
-            capture_output=True)
-        parse_response(response)
+        make_request_and_parse_response(disable_all)
 
     elif flag == 'enable_all':
         enable_all = json.dumps({**enable_map_131, **enable_map_10})
-        response = subprocess.run([
-            "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-                .format(enable_all)
-        ],
-            shell=True,
-            capture_output=True)
-        parse_response(response)
+        make_request_and_parse_response(enable_all)
 
 
-def parse_response(response):
+def make_request_and_parse_response(config_map):
+    response = subprocess.run([
+        "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
+            .format(config_map)
+    ],
+        shell=True,
+        capture_output=True)
     if response.returncode > 0:
         print("ERROR Response {}".format(response.stderr.decode('utf-8')))
         exit(response.returncode)
