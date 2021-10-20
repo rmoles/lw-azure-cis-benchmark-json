@@ -32,37 +32,39 @@ def generate_checker_map(flag):
         enable_map_131[checker] = 'enable'
 
     if flag == 'disable_cis_10':
-        disable_10 = json.dumps(disable_map_10)
-        make_request_and_parse_response(disable_10)
+        make_request_and_parse_response(json.dumps(disable_map_10))
 
     elif flag == 'enable_cis_10':
-        enable_10 = json.dumps(enable_map_10)
-        make_request_and_parse_response(enable_10)
+        make_request_and_parse_response(json.dumps(enable_map_10))
 
     elif flag == 'disable_cis_131':
-        disable_131 = json.dumps(disable_map_131)
-        make_request_and_parse_response(disable_131)
+        make_request_and_parse_response(json.dumps(disable_map_131))
 
     elif flag == 'enable_cis_131':
-        enable_131 = json.dumps(enable_map_131)
-        make_request_and_parse_response(enable_131)
+        make_request_and_parse_response(json.dumps(enable_map_131))
 
     elif flag == 'disable_all':
-        disable_all = json.dumps({**disable_map_131, **disable_map_10})
-        make_request_and_parse_response(disable_all)
+        make_request_and_parse_response(
+            json.dumps({
+                **disable_map_131,
+                **disable_map_10
+            }))
 
     elif flag == 'enable_all':
-        enable_all = json.dumps({**enable_map_131, **enable_map_10})
-        make_request_and_parse_response(enable_all)
+        make_request_and_parse_response(
+            json.dumps({
+                **enable_map_131,
+                **enable_map_10
+            }))
 
 
 def make_request_and_parse_response(config_map):
     response = subprocess.run([
-        "lacework api patch /api/v1/external/recommendations/azure -d '{}'"
-            .format(config_map)
+        "lacework api patch /api/v1/external/recommendations/azure -d '{}'".
+        format(config_map)
     ],
-        shell=True,
-        capture_output=True)
+                              shell=True,
+                              capture_output=True)
     if response.returncode > 0:
         print("ERROR Response {}".format(response.stderr.decode('utf-8')))
         exit(response.returncode)
@@ -76,7 +78,7 @@ def parse_args():
         'flag',
         action='store',
         help='Flag to determine which checkers should be enabled/disbaled. '
-             'Accepts one of: [disable_cis_10|enable_cis_10|disable_cis_131|enable_cis_131|enable_all|disable_all]'
+        'Accepts one of: [disable_cis_10|enable_cis_10|disable_cis_131|enable_cis_131|enable_all|disable_all]'
     )
     parser.add_argument(
         'lacework_tenant',
