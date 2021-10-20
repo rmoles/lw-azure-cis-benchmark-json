@@ -2,6 +2,19 @@ import argparse
 import json
 import subprocess
 
+def make_request_and_parse_response(config_map):
+    response = subprocess.run([
+        "lacework api patch /api/v1/external/recommendations/azure -d '{}'".
+            format(config_map)
+    ],
+        shell=True,
+        capture_output=True)
+    if response.returncode > 0:
+        print("ERROR Response {}".format(response.stderr.decode('utf-8')))
+        exit(response.returncode)
+    else:
+        print(response.stdout.decode('utf-8'))
+
 
 def generate_checker_map(flag):
     response = subprocess.run(
@@ -58,26 +71,12 @@ def generate_checker_map(flag):
             }))
 
 
-def make_request_and_parse_response(config_map):
-    response = subprocess.run([
-        "lacework api patch /api/v1/external/recommendations/azure -d '{}'".
-        format(config_map)
-    ],
-                              shell=True,
-                              capture_output=True)
-    if response.returncode > 0:
-        print("ERROR Response {}".format(response.stderr.decode('utf-8')))
-        exit(response.returncode)
-    else:
-        print(response.stdout.decode('utf-8'))
-
-
 def parse_args():
     parser = argparse.ArgumentParser(description='Enable/Disable checkers')
     parser.add_argument(
         'flag',
         action='store',
-        help='Flag to determine which checkers should be enabled/disbaled. '
+        help='Flag to determine which checkers should be enabled/disabled. '
         'Accepts one of: [disable_cis_10|enable_cis_10|disable_cis_131|enable_cis_131|enable_all|disable_all]'
     )
     parser.add_argument(
@@ -90,10 +89,16 @@ def parse_args():
     flag = args.flag
     lacework_tenant = args.lacework_tenant
 
-    lacework_cli_configured_tenant = subprocess.run(
+    response = subprocess.run(
         ["lacework configure list | grep \">\" | awk '{print $3}'"],
         shell=True,
         capture_output=True).stdout.decode("utf-8").strip()
+
+    if response.returncode > 0:
+        print("ERROR: {}".format(response.stderr.decode('utf-8')))
+        exit(response.returncode)
+
+    lacework_cli_configured_tenant = response.stdout.decode("utf-8").strip()
 
     if lacework_tenant != lacework_cli_configured_tenant:
         print("Error: Provided lacework tenant: " + lacework_tenant +
