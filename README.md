@@ -6,13 +6,13 @@ This repo provides example JSON body sections to enable and disable the CIS Benc
 This script can be used to bulk enable/disable compliance checkers on your target environment.
 
 ### Pre-requisites
-- Lacework CLI installed
-- Lacework CLI configured, targeting the desired Lacework tenant
-- Python 3 installed
-
+- Lacework CLI Installed & configured, targeting the desired Lacework tenant (To install and configure the Lacework CLI, follow the [Lacework CLI docs](https://github.com/lacework/go-sdk/wiki/CLI-Documentation#installation))
+- Python 3.8.10 installed (we recommend using [pyenv virtualenv](https://github.com/pyenv/pyenv-virtualenv) to manage python versions).
+  Provided you have pyenv virtualenv installed, you can use `./pyenv-init.sh` to install and activate the required version.
+- awk installed on your CLI 
 ### Usage
 
-`azure-cis-config.sh [disable_cis_10|enable_cis_10|disable_cis_131|enable_cis_131|enable_all|disable_all] [lacework-tenant]`
+`python azure-cis-config.py [disable_cis_10|enable_cis_10|disable_cis_131|enable_cis_131|enable_all|disable_all] [lacework-tenant]`
 
 Where the first argument is the action you wish to perform, and the second argument is your lacework tenant (without the `.lacework.net`)
 
